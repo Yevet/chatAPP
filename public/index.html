@@ -16,9 +16,54 @@
       <label for="password">Password</label>
       <input type="password" id="password" placeholder="Enter your password">
       
-      <button type="submit">Login</button>
-      <button type="button">Register</button>
+      <button type="submit" id="loginBtn">Login</button>
+      <button type="button" id="registerBtn">Register</button>
     </form>
   </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const loginBtn = document.getElementById('loginBtn');
+      const registerBtn = document.getElementById('registerBtn');
+
+      loginBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+
+        // 发送登录请求
+        fetch('/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ username, password })
+        })
+        .then(response => response.text())
+        .then(data => {
+          console.log(data); // 处理服务器的响应
+        });
+      });
+
+      registerBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+
+        // 发送注册请求
+        fetch('/register', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ username, password })
+        })
+        .then(response => response.text())
+        .then(data => {
+          console.log(data); // 处理服务器的响应
+        });
+      });
+    });
+  </script>
 </body>
 </html>
