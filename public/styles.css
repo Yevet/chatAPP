@@ -1,0 +1,60 @@
+/* Rest of your CSS code */
+
+/* Center everything */
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+  
+  /* Create a container for forms */
+  .container {
+    text-align: center;
+    background-color: #ffffff;
+    padding: 20px;
+    border: 1px solid #ffffff;
+    border-radius: 4px;
+    width: 300px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  /* Style form labels */
+  .form label {
+    display: block;
+    margin-top: 5px;
+    margin-bottom: 2px;
+    text-align: left;
+  }
+  
+  /* Style form inputs */
+  .form input {
+    width: 92%;
+    padding: 10px;
+    margin: 5px 0;
+    margin-right: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  /* Style form buttons */
+  .form button {
+    display: inline-block; /* Display buttons on the same line */
+    width: 49%; /* Set width to fit two buttons in one line */
+    padding: 10px;
+    background-color: #9fc5f8;
+    color: #000000;
+    margin-right: 0px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 10px;
+  }
+  
+  /* Add space between buttons */
+  .form button + button {
+    margin-left: 0%; /* Add space between buttons */
+  }
+  
