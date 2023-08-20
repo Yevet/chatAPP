@@ -46,24 +46,27 @@ app.post('/register', (req, res) => {
   });
   
   // 用户登录
-  app.post('/login', (req, res) => {
-    const { username, password } = req.body;
-    const selectQuery = `SELECT * FROM users WHERE username = ? AND password = ?`;
-  
-    connection.query(selectQuery, [username, password], (err, results) => {
-      if (err) {
-        console.error('Error logging in:', err);
-        return res.status(500).send('Error logging in');
-      }
-  
-      if (results.length === 0) {
-        return res.status(401).send('Invalid username or password');
-      }
-  
-      console.log('User logged in:', results);
-      res.status(200).send('User logged in successfully');
-    });
+// 用户登录
+app.post('/login', (req, res) => {
+  const { username, password } = req.body;
+  const selectQuery = `SELECT * FROM users WHERE username = ? AND password = ?`;
+
+  connection.query(selectQuery, [username, password], (err, results) => {
+    if (err) {
+      console.error('Error logging in:', err);
+      return res.status(500).send('Error logging in');
+    }
+
+    if (results.length === 0) {
+      return res.status(401).send('Invalid username or password');
+    }
+
+    console.log('User logged in:', results);
+    // 登录成功后重定向到聊天页面
+    res.redirect('/chat.html');
   });
+});
+
 
 
 

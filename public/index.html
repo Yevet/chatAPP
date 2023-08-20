@@ -21,6 +21,10 @@
     </form>
   </div>
 
+  <div id="registerSuccessPopup" class="popup">
+    <p>Registration successful!</p>
+  </div>
+
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       const loginBtn = document.getElementById('loginBtn');
@@ -61,6 +65,16 @@
         .then(response => response.text())
         .then(data => {
           console.log(data); // 处理服务器的响应
+          if (data === 'User registered successfully') {
+            // 注册成功，显示弹窗
+            const registerSuccessPopup = document.getElementById('registerSuccessPopup');
+            registerSuccessPopup.style.display = 'block';
+
+            // 过几秒钟后隐藏弹窗
+            setTimeout(function() {
+              registerSuccessPopup.style.display = 'none';
+            }, 3000); // 3秒后隐藏
+          }
         });
       });
     });
