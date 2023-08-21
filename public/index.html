@@ -26,28 +26,32 @@
   </div>
 
   <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      const loginBtn = document.getElementById('loginBtn');
-      const registerBtn = document.getElementById('registerBtn');
+ document.addEventListener('DOMContentLoaded', function() {
+    const loginBtn = document.getElementById('loginBtn');
+    const registerBtn = document.getElementById('registerBtn');
 
-      loginBtn.addEventListener('click', function(e) {
-        e.preventDefault();
-        const username = document.getElementById('username').value;
-        const password = document.getElementById('password').value;
+    loginBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
 
-        // 发送登录请求
-        fetch('/login', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ username, password })
-        })
-        .then(response => response.text())
-        .then(data => {
-          console.log(data); // 处理服务器的响应
-        });
+      // 发送登录请求
+      fetch('/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ username, password })
+      })
+      .then(response => response.text())
+      .then(data => {
+        console.log(data); // 处理服务器的响应
+        if (data === 'User logged in successfully') {
+          // 登录成功，重定向至 chat.html 页面
+          window.location.href = '/chat.html';
+        }
       });
+    });
 
       registerBtn.addEventListener('click', function(e) {
         e.preventDefault();
@@ -65,7 +69,7 @@
         .then(response => response.text())
         .then(data => {
           console.log(data); // 处理服务器的响应
-          if (data === 'User registered successfully') {
+          if (data === 'User registered successfully, please login directly after the window closes.') {
             // 注册成功，显示弹窗
             const registerSuccessPopup = document.getElementById('registerSuccessPopup');
             registerSuccessPopup.style.display = 'block';

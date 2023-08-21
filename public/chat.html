@@ -4,5 +4,44 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>FSE Chat Room</title>
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="chat_styles.css">
+  
 </head>
+<body>
+  <div class="header">
+    <h1>FSE Chat Room</h1>
+    <button id="logoutBtn">Logout</button>
+  </div>
+
+  <div class="chat-container">
+    <!-- 聊天消息显示区域 -->
+    <div id="messageArea">
+        <div class="message">
+          <div class="message-header">
+            <span class="message-sender">Hakan</span>
+            <span class="message-time">9:30 AM</span>
+          </div>
+          <div class="message-content">
+            This is a sample message.
+          </div>
+        </div>
+      </div>
+      
+
+    <!-- 发送消息表单 -->
+    <form id="messageForm">
+        <div class="full-width">
+          <input type="text" id="messageInput" placeholder="Enter your message">
+        </div>
+      </form>
+  </div>
+
+  <div class="footer">
+    <button id="postBtn">Post</button>
+  </div>
+
+  <script>
+    // JavaScript 代码将在这里添加
+  </script>
+</body>
+</html>
