@@ -41,7 +41,87 @@
   </div>
 
   <script>
-    // JavaScript 代码将在这里添加
+    document.addEventListener('DOMContentLoaded', function() {
+      // 获取页面元素
+      const messageArea = document.getElementById('messageArea');
+      const messageForm = document.getElementById('messageForm');
+      const messageInput = document.getElementById('messageInput');
+      const postBtn = document.getElementById('postBtn');
+      const logoutBtn = document.getElementById('logoutBtn');
+  
+      // 从数据库中读取历史消息并显示在页面上
+      // 假设您有一个/messages的API端点来获取历史消息
+      fetch('/messages')
+        .then(response => response.json())
+        .then(data => {
+          data.forEach(message => {
+            const messageElement = createMessageElement(message.sender, message.time, message.content);
+            messageArea.appendChild(messageElement);
+          });
+          messageArea.scrollTop = messageArea.scrollHeight;
+        });
+  
+      // 创建消息元素的函数
+      function createMessageElement(sender, time, content) {
+        const messageDiv = document.createElement('div');
+        messageDiv.classList.add('message');
+  
+        const messageHeader = document.createElement('div');
+        messageHeader.classList.add('message-header');
+        const senderSpan = document.createElement('span');
+        senderSpan.classList.add('message-sender');
+        senderSpan.textContent = sender;
+        const timeSpan = document.createElement('span');
+        timeSpan.classList.add('message-time');
+        timeSpan.textContent = time;
+  
+        messageHeader.appendChild(senderSpan);
+        messageHeader.appendChild(timeSpan);
+  
+        const contentDiv = document.createElement('div');
+        contentDiv.classList.add('message-content');
+        contentDiv.textContent = content;
+  
+        messageDiv.appendChild(messageHeader);
+        messageDiv.appendChild(contentDiv);
+  
+        return messageDiv;
+      }
+      
+  
+      // 添加 "Post" 按钮的点击事件处理
+      postBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        const message = messageInput.value.trim();
+  
+        if (message === '') {
+          return;
+        }
+  
+        // 发送消息到服务器
+        fetch('/postMessage', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ message })
+        })
+        .then(response => response.json())
+        .then(data => {
+          const messageElement = createMessageElement(data.sender, data.time, data.content);
+          messageArea.appendChild(messageElement);
+          messageInput.value = ''; // 清空输入框
+        });
+      });
+  
+      // 添加 "Logout" 按钮的点击事件处理
+      logoutBtn.addEventListener('click', function() {
+        // 在这里实现登出逻辑
+        // 例如：跳转到登录页面
+        window.location.href = '/'; // 假设登录页面的路径为 "/"
+      });
+    });
   </script>
+  
 </body>
 </html>

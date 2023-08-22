@@ -69,7 +69,39 @@ app.post('/login', (req, res) => {
   });
   
 
-
+// 添加一个路由处理用于获取历史消息
+app.get('/messages', (req, res) => {
+    const selectQuery = `SELECT * FROM chat_messages`;
+  
+    connection.query(selectQuery, (err, results) => {
+      if (err) {
+        console.error('Error fetching messages:', err);
+        return res.status(500).send('Error fetching messages');
+      }
+  
+      res.json(results);
+    });
+  });
+  
+  // 添加一个路由处理用于存储新消息
+  app.post('/postMessage', (req, res) => {
+    const { message } = req.body;
+    const sender = 1; // 假设当前用户为Hakan
+    const timestamp = new Date().toLocaleTimeString(); // 获取当前时间
+    const user_id= 1;
+    const insertQuery = `INSERT INTO chat_messages (user_id, message, timestamp) VALUES (?, ?, ?)`;
+  
+    connection.query(insertQuery, [sender, message, timestamp], (err, results) => {
+      if (err) {
+        console.error('Error posting message:', err);
+        return res.status(500).send('Error posting message');
+      }
+  
+      const newMessage = { sender, message, timestamp };
+      res.json(newMessage);
+    });
+  });
+  
 
 
 

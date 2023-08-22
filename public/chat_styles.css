@@ -55,7 +55,7 @@ body, h1, h2, p,  button {
   }
   
   .message {
-    background-color: #ffffff;
+    background-color: #d7c5c5;
     padding: 100%;
     border-radius: 5px;
   }
@@ -95,8 +95,8 @@ body, h1, h2, p,  button {
   }
   
   .message {
-    background-color: #ffffff;
-    border: 1px solid #cccccc;
+    background-color: #e7e7e7;
+    border: 1px solid #e7e7e7;
     padding: 10px;
     margin-bottom: 10px;
   }
