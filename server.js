@@ -86,21 +86,23 @@ app.get('/messages', (req, res) => {
   // 添加一个路由处理用于存储新消息
   app.post('/postMessage', (req, res) => {
     const { message } = req.body;
-    const sender = 1; // 假设当前用户为Hakan
-    const timestamp = new Date().toLocaleTimeString(); // 获取当前时间
-    const user_id= 1;
-    const insertQuery = `INSERT INTO chat_messages (user_id, message, timestamp) VALUES (?, ?, ?)`;
+    const user_id = 1; // 替换为当前用户的 user_id，这里假设用户ID为1
+    const isoTimestamp = new Date().toISOString();
+    const unixTimestamp = Math.floor(new Date(isoTimestamp).getTime() / 1000);
+    
+    const insertQuery = `INSERT INTO chat_messages (user_id, message, timestamp) VALUES (?, ?, FROM_UNIXTIME(?))`;
   
-    connection.query(insertQuery, [sender, message, timestamp], (err, results) => {
-      if (err) {
-        console.error('Error posting message:', err);
-        return res.status(500).send('Error posting message');
-      }
+    connection.query(insertQuery, [user_id, message, unixTimestamp], (err, results) => {
+        if (err) {
+            console.error('Error posting message:', err);
+            return res.status(500).send('Error posting message');
+        }
   
-      const newMessage = { sender, message, timestamp };
-      res.json(newMessage);
+        const newMessage = { user_id, message, timestamp: isoTimestamp };
+        res.json(newMessage);
     });
   });
+  
   
 
 
