@@ -50,6 +50,8 @@
             const messageInput = document.getElementById('messageInput');
             const postBtn = document.getElementById('postBtn');
             const logoutBtn = document.getElementById('logoutBtn');
+            const loggedInUser = JSON.parse(decodeURIComponent(getCookie('loggedInUser')));
+
 
             // 从数据库中读取历史消息并显示在页面上
             // 假设您有一个/messages的API端点来获取历史消息
@@ -107,7 +109,7 @@
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ message })
+                    body: JSON.stringify({ message, user_id: loggedInUser.id })
                 })
                     .then(response => response.json())
                     .then(data => {
@@ -127,6 +129,11 @@
                 window.location.href = '/'; // 假设登录页面的路径为 "/"
             });
         });
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+        }
     </script>
 
 </body>

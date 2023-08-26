@@ -41,6 +41,7 @@ app.post('/register', (req, res) => {
         return res.status(500).send('Error registering user');
       }
       console.log('User registered:', results);
+
       res.status(200).send('User registered successfully');
     });
   });
@@ -64,6 +65,8 @@ app.post('/login', (req, res) => {
   
       console.log('User logged in:', results);
       // 登录成功后返回成功标志给前端
+      res.cookie('loggedInUser', JSON.stringify(results[0]), { maxAge: 3600000 }); // 1 hour
+
       res.status(200).send('User logged in successfully');
     });
   });
@@ -86,7 +89,7 @@ app.get('/messages', (req, res) => {
   // 添加一个路由处理用于存储新消息
   app.post('/postMessage', (req, res) => {
     const { message } = req.body;
-    const user_id = 1; // 替换为当前用户的 user_id，这里假设用户ID为1
+    const { user_id } = req.body;
     const isoTimestamp = new Date().toISOString();
     const unixTimestamp = Math.floor(new Date(isoTimestamp).getTime() / 1000);
     
