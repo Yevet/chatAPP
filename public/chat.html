@@ -46,32 +46,34 @@
             // 从数据库中读取历史消息并显示在页面上
             // 假设您有一个/messages的API端点来获取历史消息
             fetch('/messages')
-                .then(response => response.json())
-                .then(data => {
-                    const messages = [];
+            .then(response => response.json())
+            .then(data => {
+                const messages = [];
 
-                    data.forEach(message => {
-                        getUserUsername(message.user_id)
-                            .then(username => {
-                                const formattedTimestamp = new Date(message.timestamp).toLocaleString();
-                                const messageElement = createMessageElement(username, formattedTimestamp, message.message);
-                                messages.push({ timestamp: new Date(message.timestamp), element: messageElement });
+                data.forEach(message => {
+                    getUserUsername(message.user_id)
+                        .then(username => {
+                            const formattedTimestamp = new Date(message.timestamp).toLocaleString();
+                            const displayUsername = message.user_id === loggedInUserId ? "Me" : username; // 判断是否是当前用户的消息
+                            const messageElement = createMessageElement(displayUsername, formattedTimestamp, message.message);
+                            messages.push({ timestamp: new Date(message.timestamp), element: messageElement });
 
-                                if (messages.length === data.length) {
-                                    // 所有消息都已添加，现在进行排序
-                                    messages.sort((a, b) => a.timestamp - b.timestamp);
+                            if (messages.length === data.length) {
+                                // 所有消息都已添加，现在进行排序
+                                messages.sort((a, b) => a.timestamp - b.timestamp);
 
-                                    // 将排序后的消息添加到 messageArea
-                                    messages.forEach(msg => {
-                                        messageArea.appendChild(msg.element);
-                                    });
+                                // 将排序后的消息添加到 messageArea
+                                messages.forEach(msg => {
+                                    messageArea.appendChild(msg.element);
+                                });
 
-                                    // 滚动到底部
-                                    messageArea.scrollTop = messageArea.scrollHeight;
-                                }
-                            });
-                    });
+                                // 滚动到底部
+                                messageArea.scrollTop = messageArea.scrollHeight;
+                            }
+                        });
                 });
+            });
+
 
 
 
@@ -109,13 +111,15 @@
             }
             const socket = new WebSocket(`ws://${window.location.host}`);
 
+            const loggedInUserId = loggedInUser.id;
             socket.addEventListener('message', (event) => {
                 // 当收到新消息时，创建消息元素并将其添加到页面
                 const message = JSON.parse(event.data);
                 getUserUsername(message.user_id)
                     .then(username => {
                         const formattedTimestamp = new Date(message.timestamp).toLocaleString();
-                        const messageElement = createMessageElement(username, formattedTimestamp, message.message);
+                        const displayUsername = message.user_id === loggedInUserId ? "Me" : username; // 判断是否是当前用户的消息
+                        const messageElement = createMessageElement(displayUsername, formattedTimestamp, message.message);
                         messageArea.appendChild(messageElement);
                         messageArea.scrollTop = messageArea.scrollHeight;
                     });
@@ -141,14 +145,6 @@
                 })
                     .then(response => response.json())
                     .then(data => {
-                        // getUserUsername(loggedInUser.id) // 获取当前登录用户的用户名
-                        //     .then(username => {
-                        //         const formattedTimestamp = new Date(data.timestamp).toLocaleString(); // 格式化时间戳
-                        //         //const messageElement = createMessageElement(username, formattedTimestamp, data.message);
-                        //         //messageArea.appendChild(messageElement);
-                        //         messageInput.value = ''; // 清空输入框
-                        //         messageArea.scrollTop = messageArea.scrollHeight;
-                        //     });
                         messageInput.value = ''; // 清空输入框
                         messageArea.scrollTop = messageArea.scrollHeight;
                     });
