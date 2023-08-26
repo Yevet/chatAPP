@@ -105,7 +105,25 @@ app.get('/messages', (req, res) => {
         res.json(newMessage);
     });
   });
-  
+  // 添加一个路由处理用于获取用户的用户名
+app.get('/getUser/:userId', (req, res) => {
+    const userId = req.params.userId;
+    const selectQuery = `SELECT username FROM users WHERE id = ?`;
+
+    connection.query(selectQuery, [userId], (err, results) => {
+        if (err) {
+            console.error('Error fetching user:', err);
+            return res.status(500).send('Error fetching user');
+        }
+
+        if (results.length === 0) {
+            return res.status(404).send('User not found');
+        }
+
+        res.json(results[0]);
+    });
+});
+
   
 
 

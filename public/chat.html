@@ -18,7 +18,7 @@
     <div class="chat-container">
         <!-- 聊天消息显示区域 -->
         <div id="messageArea">
-            <div class="message">
+            <!-- <div class="message">
                 <div class="message-header">
                     <span class="message-sender">Hakan</span>
                     <span class="message-time">9:30 AM</span>
@@ -26,7 +26,7 @@
                 <div class="message-content">
                     This is a sample message.
                 </div>
-            </div>
+            </div> -->
         </div>
 
 
@@ -58,13 +58,38 @@
             fetch('/messages')
                 .then(response => response.json())
                 .then(data => {
+                    const messages = [];
+
                     data.forEach(message => {
-                        const formattedTimestamp = new Date(message.timestamp).toLocaleString(); // 格式化时间戳
-                        const messageElement = createMessageElement(message.user_id, formattedTimestamp, message.message);
-                        messageArea.appendChild(messageElement);
+                        getUserUsername(message.user_id)
+                            .then(username => {
+                                const formattedTimestamp = new Date(message.timestamp).toLocaleString();
+                                const messageElement = createMessageElement(username, formattedTimestamp, message.message);
+                                messages.push({ timestamp: new Date(message.timestamp), element: messageElement });
+
+                                if (messages.length === data.length) {
+                                    // 所有消息都已添加，现在进行排序
+                                    messages.sort((a, b) => a.timestamp - b.timestamp);
+
+                                    // 将排序后的消息添加到 messageArea
+                                    messages.forEach(msg => {
+                                        messageArea.appendChild(msg.element);
+                                    });
+
+                                    // 滚动到底部
+                                    messageArea.scrollTop = messageArea.scrollHeight;
+                                }
+                            });
                     });
-                    messageArea.scrollTop = messageArea.scrollHeight;
                 });
+
+
+
+            function getUserUsername(userId) {
+                return fetch(`/getUser/${userId}`)
+                    .then(response => response.json())
+                    .then(data => data.username);
+            }
 
             // 创建消息元素的函数
             function createMessageElement(userId, timestamp, content) {
@@ -75,7 +100,7 @@
                 messageHeader.classList.add('message-header');
                 const senderSpan = document.createElement('span');
                 senderSpan.classList.add('message-sender');
-                senderSpan.textContent = `User ${userId}`;
+                senderSpan.textContent = `${userId}`;
                 const timeSpan = document.createElement('span');
                 timeSpan.classList.add('message-time');
                 timeSpan.textContent = timestamp;
@@ -113,11 +138,14 @@
                 })
                     .then(response => response.json())
                     .then(data => {
-                        const formattedTimestamp = new Date(data.timestamp).toLocaleString(); // 格式化时间戳
-                        const messageElement = createMessageElement(data.user_id, formattedTimestamp, data.message);
-                        messageArea.appendChild(messageElement);
-                        messageInput.value = ''; // 清空输入框
-                        messageArea.scrollTop = messageArea.scrollHeight;
+                        getUserUsername(loggedInUser.id) // 获取当前登录用户的用户名
+                            .then(username => {
+                                const formattedTimestamp = new Date(data.timestamp).toLocaleString(); // 格式化时间戳
+                                const messageElement = createMessageElement(username, formattedTimestamp, data.message);
+                                messageArea.appendChild(messageElement);
+                                messageInput.value = ''; // 清空输入框
+                                messageArea.scrollTop = messageArea.scrollHeight;
+                            });
                     });
 
             });
@@ -134,6 +162,7 @@
             const parts = value.split(`; ${name}=`);
             if (parts.length === 2) return parts.pop().split(';').shift();
         }
+
     </script>
 
 </body>
