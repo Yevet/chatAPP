@@ -1,97 +1,81 @@
 /* 重置默认样式 */
+/* 重置默认样式 */
 body, h1, h2, p,  button {
-    margin: 0;
+    margin: 1%;
     padding: 0;
     border: 0;
     font-size: 100%;
     font-family: inherit;
     vertical-align: baseline;
-  }
-  
-  /* 基本样式 */
-  body {
+}
+
+/* 基本样式 */
+body {
     font-family: Arial, sans-serif;
-  }
-  input{
-    margin: 0;
-    padding: 0;
-    border: 0;
-    font-size: 100%;
-    font-family: inherit;
-    vertical-align: baseline;
-  }
-  .container {
+}
+
+.container {
     max-width: 1200px;
     margin: 0 auto;
     padding: 20px;
-  }
+}
+
 /* 将宽度设置为100% */
-  /* 调整输入框样式 */
+.full-width {
+    width: 100%;
+}
+
+/* 调整输入框样式 */
 #messageInput {
-    width: 100%; /* 使输入框占据整个宽度 */
-    height: 100%; /* 设置输入框高度 */
-    font-size: 16px; /* 设置字体大小 */
-    padding: 10px; /* 设置内边距 */
-    box-sizing: border-box; /* 保证内边距和边框不会影响宽度和高度 */
-    border: #666666;
-  }
-  
-  
-  .header {
+    width: 100%;
+    height: 80%; /* 设置输入框高度 */
+    font-size: 16px;
+    padding: 10px;
+    box-sizing: border-box;
+    border: 1px solid #000000; /* 添加黑色边框 */
+    margin-bottom: 1%;
+}
+
+.header {
     background-color: #9fc5f8;
-    
     color: rgb(0, 0, 0);
     padding: 1%;
     display: flex;
     justify-content: space-between;
     align-items: center;
-  }
-  
-  .chat-container {
+    gap: 10px;
+    height: 10%; /* 设置高度为10% */
+}
+
+.chat-container {
     display: flex;
     flex-direction: column;
     gap: 10px;
-    padding: 20%;
-  }
-  
-  .message {
+    padding: 0%;
+    padding-top: 1%;
+    height: 80%; /* 设置高度为80% */
+}
+
+.message {
     background-color: #d7c5c5;
     padding: 100%;
-    border-radius: 5px;
-  }
+    height: 35%; /* 设置历史消息高度为45% */
+}
 
-  .form {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-  
-  button {
-    background-color: rgba(255, 149, 0, 0.865);
-    color: rgb(0, 0, 0);
-    padding: 8px 16px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  button:hover {
-    background-color: rgb(255, 149, 0);
-  }
-  
-  .footer {
+.footer {
     background-color: #9fc5f8;
     color: white;
     text-align: center;
     padding: 1%;
-  }
+    height: 5%; /* 设置高度为10% */
+}
 
   /* 调整历史消息样式 */
 #messageArea {
     padding: 0px;
     background-color: #ffffff;
     overflow-y: auto; /* 允许滚动 */
-    max-height: calc(100vh - 150px); /* 限制最大高度，确保页面不会溢出 */
+    max-height: calc(800vh - 100px); /* 限制最大高度，确保页面不会溢出 */
   }
   
   .message {
@@ -119,7 +103,17 @@ body, h1, h2, p,  button {
   .message-content {
     font-size: 16px;
   }
-  
+  button {
+    background-color: rgba(255, 149, 0, 0.865);
+    color: rgb(0, 0, 0);
+    padding: 8px 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    border: 1px solid #000000;
+  }
+  button:hover {
+    background-color: rgb(255, 149, 0);
+  }
 
   /* 响应式布局 
   @media screen and (max-width: 768px) {
