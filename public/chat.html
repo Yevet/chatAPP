@@ -107,7 +107,19 @@
 
                 return messageDiv;
             }
+            const socket = new WebSocket(`ws://${window.location.host}`);
 
+            socket.addEventListener('message', (event) => {
+                // 当收到新消息时，创建消息元素并将其添加到页面
+                const message = JSON.parse(event.data);
+                getUserUsername(message.user_id)
+                    .then(username => {
+                        const formattedTimestamp = new Date(message.timestamp).toLocaleString();
+                        const messageElement = createMessageElement(username, formattedTimestamp, message.message);
+                        messageArea.appendChild(messageElement);
+                        messageArea.scrollTop = messageArea.scrollHeight;
+                    });
+            });
 
             // 添加 "Post" 按钮的点击事件处理
             postBtn.addEventListener('click', function (e) {
@@ -122,20 +134,23 @@
                 fetch('/postMessage', {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
+                        'Cookie': document.cookie
                     },
                     body: JSON.stringify({ message, user_id: loggedInUser.id })
                 })
                     .then(response => response.json())
                     .then(data => {
-                        getUserUsername(loggedInUser.id) // 获取当前登录用户的用户名
-                            .then(username => {
-                                const formattedTimestamp = new Date(data.timestamp).toLocaleString(); // 格式化时间戳
-                                const messageElement = createMessageElement(username, formattedTimestamp, data.message);
-                                messageArea.appendChild(messageElement);
-                                messageInput.value = ''; // 清空输入框
-                                messageArea.scrollTop = messageArea.scrollHeight;
-                            });
+                        // getUserUsername(loggedInUser.id) // 获取当前登录用户的用户名
+                        //     .then(username => {
+                        //         const formattedTimestamp = new Date(data.timestamp).toLocaleString(); // 格式化时间戳
+                        //         //const messageElement = createMessageElement(username, formattedTimestamp, data.message);
+                        //         //messageArea.appendChild(messageElement);
+                        //         messageInput.value = ''; // 清空输入框
+                        //         messageArea.scrollTop = messageArea.scrollHeight;
+                        //     });
+                        messageInput.value = ''; // 清空输入框
+                        messageArea.scrollTop = messageArea.scrollHeight;
                     });
 
             });
