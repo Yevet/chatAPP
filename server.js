@@ -11,10 +11,10 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 const connection = mysql.createConnection({
-    host: 'localhost', // MySQL服务器地址
-    user: 'root', // 用户名
-    password: 'MY20000218', // 密码
-    database: 'chatroom' // 数据库名
+    host: 'localhost', // MySQL server address
+    user: 'root', // username
+    password: 'MY20000218', // password
+    database: 'chatroom' // database name
 });
 
 connection.connect((err) => {
@@ -27,20 +27,26 @@ connection.connect((err) => {
 
 app.use(express.static(__dirname + '/public'));
 
-// 根路径的路由处理
+// routing of the root path
 app.get('/', (req, res) => {
     res.sendFile(__dirname + '/public/index.html');
 });
 
-// 用户注册和登录路由...
+// user registration and login routing
 app.post('/register', (req, res) => {
     const { username, password } = req.body;
     const insertQuery = `INSERT INTO users (username, password) VALUES (?, ?)`;
 
     connection.query(insertQuery, [username, password], (err, results) => {
         if (err) {
-            console.error('Error registering user:', err);
-            return res.status(500).send('Error registering user');
+            if (err.code === 'ER_DUP_ENTRY') {
+                // Duplicate entry error for username
+                console.error('Error registering user:', err);
+                return res.status(400).send('Duplicate username');
+            } else {
+                console.error('Error registering user:', err);
+                return res.status(500).send('Error registering user');
+            }
         }
         console.log('User registered:', results);
 
@@ -48,8 +54,7 @@ app.post('/register', (req, res) => {
     });
 });
 
-// 用户登录
-
+// user login
 app.post('/login', (req, res) => {
     const { username, password } = req.body;
     const selectQuery = `SELECT * FROM users WHERE username = ? AND password = ?`;
@@ -66,7 +71,7 @@ app.post('/login', (req, res) => {
 
         console.log('User logged in:', results);
         const loggedInUser = results[0];
-        // 登录成功后返回成功标志给前端
+        // after successful login, a success sign is returned to the front-end
         res.cookie('loggedInUser', JSON.stringify(results[0]), { maxAge: 3600000 }); // 1 hour
 
         res.status(200).send('User logged in successfully');
@@ -74,7 +79,7 @@ app.post('/login', (req, res) => {
 });
 
 
-// 添加一个路由处理用于获取历史消息
+// add a routing process for retrieving historical messages
 app.get('/messages', (req, res) => {
     const selectQuery = `SELECT * FROM chat_messages`;
 
@@ -88,7 +93,7 @@ app.get('/messages', (req, res) => {
     });
 });
 
-// 添加一个路由处理用于存储新消息
+// add a routing process for storing new messages
 app.post('/postMessage', (req, res) => {
     const { message } = req.body;
     const { user_id } = req.body;
@@ -106,7 +111,7 @@ app.post('/postMessage', (req, res) => {
         const newMessage = { user_id, message, timestamp: isoTimestamp };
         res.json(newMessage);
     });
-    // 发送消息到WebSocket服务器
+    // send messages to the WebSocket server
     const messageData = JSON.stringify({ message: message, user_id: user_id, timestamp: new Date() });
     connectedClients.forEach((client) => {
         if (client.readyState === WebSocket.OPEN) {
@@ -116,7 +121,7 @@ app.post('/postMessage', (req, res) => {
 
 
 });
-// 添加一个路由处理用于获取用户的用户名
+// add a route handler to get the user's username
 app.get('/getUser/:userId', (req, res) => {
     const userId = req.params.userId;
     const selectQuery = `SELECT username FROM users WHERE id = ?`;
@@ -136,14 +141,14 @@ app.get('/getUser/:userId', (req, res) => {
 });
 
 
-// 与WebSocket相关的代码
+// websocket-related code
 const connectedClients = new Set();
 
 wss.on('connection', (socket) => {
     connectedClients.add(socket);
 
     socket.on('message', (message) => {
-        // 当收到消息时，广播给所有连接的客户端
+        // when a message is received, it is broadcast to all connected clients
         connectedClients.forEach((client) => {
             if (client.readyState === WebSocket.OPEN) {
                 client.send(message);
@@ -156,12 +161,12 @@ wss.on('connection', (socket) => {
     });
 });
 
-// 使用 server 对象创建 WebSocket 服务器
+// create a WebSocket server using the Server object
 const server = app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
 });
 
-// 将WebSocket服务器绑定到现有HTTP服务器
+// bind the WebSocket server to an existing HTTP server
 server.on('upgrade', (request, socket, head) => {
     wss.handleUpgrade(request, socket, head, (socket) => {
         wss.emit('connection', socket, request);

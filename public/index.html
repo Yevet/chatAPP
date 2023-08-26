@@ -1,87 +1,102 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FSE Chat Room</title>
-  <link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FSE Chat Room</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
-  <div class="container">
-    <h1>FSE Chat Room</h1>
-    <form class="form">
-      <label for="username">Username</label>
-      <input type="text" id="username" placeholder="Enter your username">
-      
-      <label for="password">Password</label>
-      <input type="password" id="password" placeholder="Enter your password">
-      
-      <button type="submit" id="loginBtn">Login</button>
-      <button type="button" id="registerBtn">Register</button>
-    </form>
-  </div>
+    <div class="container">
+        <h1>FSE Chat Room</h1>
+        <form class="form">
+            <label for="username">Username</label>
+            <input type="text" id="username" placeholder="Enter your username">
 
-  <div id="registerSuccessPopup" class="popup">
-    <p>Registration successful!</p>
-  </div>
+            <label for="password">Password</label>
+            <input type="password" id="password" placeholder="Enter your password">
 
-  <script>
- document.addEventListener('DOMContentLoaded', function() {
-    const loginBtn = document.getElementById('loginBtn');
-    const registerBtn = document.getElementById('registerBtn');
+            <button type="submit" id="loginBtn">Login</button>
+            <button type="button" id="registerBtn">Register</button>
+            <div></div>
+            <div id="loginRegisterResult" class="result"></div>
 
-    loginBtn.addEventListener('click', function(e) {
-      e.preventDefault();
-      const username = document.getElementById('username').value;
-      const password = document.getElementById('password').value;
+        </form>
+    </div>
 
-      // 发送登录请求
-      fetch('/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ username, password })
-      })
-      .then(response => response.text())
-      .then(data => {
-        console.log(data); // 处理服务器的响应
-        if (data === 'User logged in successfully') {
-          // 登录成功，重定向至 chat.html 页面
-          window.location.href = '/chat.html';
-        }
-      });
-    });
+    <div id="registerSuccessPopup" class="popup">
+        <p>Registration successful!</p>
+    </div>
 
-      registerBtn.addEventListener('click', function(e) {
-        e.preventDefault();
-        const username = document.getElementById('username').value;
-        const password = document.getElementById('password').value;
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const loginBtn = document.getElementById('loginBtn');
+            const registerBtn = document.getElementById('registerBtn');
 
-        // 发送注册请求
-        fetch('/register', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ username, password })
-        })
-        .then(response => response.text())
-        .then(data => {
-          console.log(data); // 处理服务器的响应
-          if (data === 'User registered successfully, please login directly after the window closes.') {
-            // 注册成功，显示弹窗
-            const registerSuccessPopup = document.getElementById('registerSuccessPopup');
-            registerSuccessPopup.style.display = 'block';
+            loginBtn.addEventListener('click', function (e) {
+                e.preventDefault();
+                const username = document.getElementById('username').value;
+                const password = document.getElementById('password').value;
 
-            // 过几秒钟后隐藏弹窗
-            setTimeout(function() {
-              registerSuccessPopup.style.display = 'none';
-            }, 3000); // 3秒后隐藏
-          }
+                // 发送登录请求
+                fetch('/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username, password })
+                })
+                    .then(response => response.text())
+                    .then(data => {
+                        console.log(data); // 处理服务器的响应
+                        if (data === 'User logged in successfully') {
+                            // 登录成功，重定向至 chat.html 页面
+                            window.location.href = '/chat.html';
+                        } else {
+                            // 登录失败，显示错误消息
+                            const loginResult = document.getElementById('loginRegisterResult');
+                            loginResult.textContent = 'Fail to login! Wrong username or password!';
+                            loginResult.style.color = 'red';
+                        }
+                    });
+            });
+
+            registerBtn.addEventListener('click', function (e) {
+                e.preventDefault();
+                const username = document.getElementById('username').value;
+                const password = document.getElementById('password').value;
+
+                // 发送注册请求
+                fetch('/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username, password })
+                })
+                    .then(response => response.text())
+                    .then(data => {
+                        console.log(data); // 处理服务器的响应
+                        const registerResult = document.getElementById('loginRegisterResult');
+                        if (data === 'User registered successfully') {
+                            // 注册成功，显示注册成功消息
+                            registerResult.textContent = 'Successfully registered! Now please login.';
+                            registerResult.style.color = 'green';
+                        } else if (data=='Duplicate username') {
+                            registerResult.textContent = 'This username already exists!';
+                            registerResult.style.color = 'red';
+                        }
+                        else{
+                            // 注册失败，显示错误消息
+                            registerResult.textContent = 'Fail to register!';
+                            registerResult.style.color = 'red';
+                        }
+                    });
+            });
         });
-      });
-    });
-  </script>
+    </script>
 </body>
+
 </html>
