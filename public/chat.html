@@ -16,11 +16,11 @@
     </div>
 
     <div class="chat-container">
-        <!-- 聊天消息显示区域 -->
+        <!-- chat message display area -->
         <div id="messageArea">
         </div>
 
-        <!-- 发送消息表单 -->
+        <!-- send message form -->
         <form id="messageForm">
             <div class="full-width">
                 <input type="text" id="messageInput" placeholder="Enter your message">
@@ -34,7 +34,7 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            // 获取页面元素
+            // get page element
             const messageArea = document.getElementById('messageArea');
             const messageForm = document.getElementById('messageForm');
             const messageInput = document.getElementById('messageInput');
@@ -43,36 +43,36 @@
             const loggedInUser = JSON.parse(decodeURIComponent(getCookie('loggedInUser')));
 
 
-            // 从数据库中读取历史消息并显示在页面上
-            // 假设您有一个/messages的API端点来获取历史消息
+            // the historical message is read from the database and displayed on the page
+            // get historical information
             fetch('/messages')
-            .then(response => response.json())
-            .then(data => {
-                const messages = [];
+                .then(response => response.json())
+                .then(data => {
+                    const messages = [];
 
-                data.forEach(message => {
-                    getUserUsername(message.user_id)
-                        .then(username => {
-                            const formattedTimestamp = new Date(message.timestamp).toLocaleString();
-                            const displayUsername = message.user_id === loggedInUserId ? "Me" : username; // 判断是否是当前用户的消息
-                            const messageElement = createMessageElement(displayUsername, formattedTimestamp, message.message);
-                            messages.push({ timestamp: new Date(message.timestamp), element: messageElement });
+                    data.forEach(message => {
+                        getUserUsername(message.user_id)
+                            .then(username => {
+                                const formattedTimestamp = new Date(message.timestamp).toLocaleString();
+                                const displayUsername = message.user_id === loggedInUserId ? "Me" : username; // check whether the message is from the current user
+                                const messageElement = createMessageElement(displayUsername, formattedTimestamp, message.message);
+                                messages.push({ timestamp: new Date(message.timestamp), element: messageElement });
 
-                            if (messages.length === data.length) {
-                                // 所有消息都已添加，现在进行排序
-                                messages.sort((a, b) => a.timestamp - b.timestamp);
+                                if (messages.length === data.length) {
+                                    // all messages have been added and are now sorted
+                                    messages.sort((a, b) => a.timestamp - b.timestamp);
 
-                                // 将排序后的消息添加到 messageArea
-                                messages.forEach(msg => {
-                                    messageArea.appendChild(msg.element);
-                                });
+                                    // add the sorted message to the messageArea
+                                    messages.forEach(msg => {
+                                        messageArea.appendChild(msg.element);
+                                    });
 
-                                // 滚动到底部
-                                messageArea.scrollTop = messageArea.scrollHeight;
-                            }
-                        });
+                                    // roll to the bottom
+                                    messageArea.scrollTop = messageArea.scrollHeight;
+                                }
+                            });
+                    });
                 });
-            });
 
 
 
@@ -83,7 +83,7 @@
                     .then(data => data.username);
             }
 
-            // 创建消息元素的函数
+            // a function that creates a message element
             function createMessageElement(userId, timestamp, content) {
                 const messageDiv = document.createElement('div');
                 messageDiv.classList.add('message');
@@ -113,19 +113,19 @@
 
             const loggedInUserId = loggedInUser.id;
             socket.addEventListener('message', (event) => {
-                // 当收到新消息时，创建消息元素并将其添加到页面
+                // when a new message is received, the message element is created and added to the page
                 const message = JSON.parse(event.data);
                 getUserUsername(message.user_id)
                     .then(username => {
                         const formattedTimestamp = new Date(message.timestamp).toLocaleString();
-                        const displayUsername = message.user_id === loggedInUserId ? "Me" : username; // 判断是否是当前用户的消息
+                        const displayUsername = message.user_id === loggedInUserId ? "Me" : username; // check whether the message is from the current user
                         const messageElement = createMessageElement(displayUsername, formattedTimestamp, message.message);
                         messageArea.appendChild(messageElement);
                         messageArea.scrollTop = messageArea.scrollHeight;
                     });
             });
 
-            // 添加 "Post" 按钮的点击事件处理
+            // add click event handling for the "Post" button
             postBtn.addEventListener('click', function (e) {
                 e.preventDefault();
                 const message = messageInput.value.trim();
@@ -134,7 +134,7 @@
                     return;
                 }
 
-                // 发送消息到服务器
+                // send a message to the server
                 fetch('/postMessage', {
                     method: 'POST',
                     headers: {
@@ -145,17 +145,16 @@
                 })
                     .then(response => response.json())
                     .then(data => {
-                        messageInput.value = ''; // 清空输入框
+                        messageInput.value = ''; // clear input field
                         messageArea.scrollTop = messageArea.scrollHeight;
                     });
 
             });
 
-            // 添加 "Logout" 按钮的点击事件处理
+            // add click event handling for the "Logout" button
             logoutBtn.addEventListener('click', function () {
-                // 在这里实现登出逻辑
-                // 例如：跳转到登录页面
-                window.location.href = '/'; // 假设登录页面的路径为 "/"
+
+                window.location.href = '/'; 
             });
         });
         function getCookie(name) {

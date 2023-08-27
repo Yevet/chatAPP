@@ -40,7 +40,7 @@
                 const username = document.getElementById('username').value;
                 const password = document.getElementById('password').value;
 
-                // 发送登录请求
+                // send login request
                 fetch('/login', {
                     method: 'POST',
                     headers: {
@@ -50,12 +50,12 @@
                 })
                     .then(response => response.text())
                     .then(data => {
-                        console.log(data); // 处理服务器的响应
+                        console.log(data); // process the server's response
                         if (data === 'User logged in successfully') {
-                            // 登录成功，重定向至 chat.html 页面
+                            // login successful, redirect to chat.html page
                             window.location.href = '/chat.html';
                         } else {
-                            // 登录失败，显示错误消息
+                            // login failed, error message displayed
                             const loginResult = document.getElementById('loginRegisterResult');
                             loginResult.textContent = 'Fail to login! Wrong username or password!';
                             loginResult.style.color = 'red';
@@ -68,7 +68,7 @@
                 const username = document.getElementById('username').value;
                 const password = document.getElementById('password').value;
 
-                // 发送注册请求
+                // send a registration request
                 fetch('/register', {
                     method: 'POST',
                     headers: {
@@ -78,10 +78,10 @@
                 })
                     .then(response => response.text())
                     .then(data => {
-                        console.log(data); // 处理服务器的响应
+                        console.log(data); // process the server's response
                         const registerResult = document.getElementById('loginRegisterResult');
                         if (data === 'User registered successfully') {
-                            // 注册成功，显示注册成功消息
+                            // If the registration succeeds, a message indicating that the registration succeeds is displayed
                             registerResult.textContent = 'Successfully registered! Now please login.';
                             registerResult.style.color = 'green';
                         } else if (data=='Duplicate username') {
@@ -89,7 +89,7 @@
                             registerResult.style.color = 'red';
                         }
                         else{
-                            // 注册失败，显示错误消息
+                            // registration failed, and an error message is displayed
                             registerResult.textContent = 'Fail to register!';
                             registerResult.style.color = 'red';
                         }
