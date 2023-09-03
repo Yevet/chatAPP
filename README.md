@@ -1,4 +1,6 @@
 # Chat Room
+<img src="./all.png" alt="Image" width="50%" height="50%">
+
 
 ## video
 
@@ -14,10 +16,7 @@
 
 
 
-![image-20230903144253543](./1.png)
-
-![image-20230903144324816](./2.png)
-
-![image-20230903144346959](./3.png)
-
-![image-20230903144421583](./4.png)
+<img src="./1.png" alt="Image" width="60%" >
+<img src="./2.png" alt="Image" width="60%">
+<img src="./3.png" alt="Image" width="60%" >
+<img src="./4.png" alt="Image" width="60%" >
